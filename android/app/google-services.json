@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "941009525701",
+    "project_id": "the-delivers-527aa",
+    "storage_bucket": "the-delivers-527aa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:941009525701:android:a73cff3cdb8680c1d709ac",
+        "android_client_info": {
+          "package_name": "com.example.Delivers"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "941009525701-lj1b77ldm9kjg7unn9mgu0e7c1dcqh0n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCK_YjlI99BzThgTdEaGRAP4pr05kfjYXs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "941009525701-lj1b77ldm9kjg7unn9mgu0e7c1dcqh0n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
