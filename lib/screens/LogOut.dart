@@ -1,11 +1,18 @@
-import 'package:Delivers/screens/HomePage.dart';
+
+import 'package:Delivers/screens/HomeScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 class LogOut extends StatefulWidget {
   @override
   _LogOutState createState() => _LogOutState();
 }
 
 class _LogOutState extends State<LogOut> {
+
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  User firebaseUser;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,9 +53,10 @@ class _LogOutState extends State<LogOut> {
                         padding: const EdgeInsets.all(5.0,),
                         child: RaisedButton(
                           onPressed: () {
+                            signOut();
                             Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => HomePage()),
+                                MaterialPageRoute(builder: (context) => HomeScreen()),
                             );
                           },
                           child: Text(
@@ -77,5 +85,8 @@ class _LogOutState extends State<LogOut> {
       ),
       
     );
+  }
+  void signOut(){
+    _auth.signOut();
   }
 }

@@ -1,7 +1,7 @@
 import 'package:Delivers/screens/LogIn.dart';
 import 'package:Delivers/screens/Register.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 
 class HomePage extends StatefulWidget {
   @override
@@ -9,8 +9,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final userNameController = TextEditingController();
-  final passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

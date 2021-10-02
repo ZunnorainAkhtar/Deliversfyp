@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "941009525701",
-    "project_id": "the-delivers-527aa",
-    "storage_bucket": "the-delivers-527aa.appspot.com"
+    "project_number": "368421130692",
+    "project_id": "support-system-eca21",
+    "storage_bucket": "support-system-eca21.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:941009525701:android:a73cff3cdb8680c1d709ac",
+        "mobilesdk_app_id": "1:368421130692:android:d36f1df86c0e6f0666d491",
         "android_client_info": {
           "package_name": "com.example.Delivers"
         }
       },
       "oauth_client": [
         {
-          "client_id": "941009525701-lj1b77ldm9kjg7unn9mgu0e7c1dcqh0n.apps.googleusercontent.com",
+          "client_id": "368421130692-s0ia0qsg5n4ohrlbvml7hpfg3f8dgq01.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCK_YjlI99BzThgTdEaGRAP4pr05kfjYXs"
+          "current_key": "AIzaSyABnBzlAZ_8nbgRinujZkmsdE5-lIh5Eeo"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "941009525701-lj1b77ldm9kjg7unn9mgu0e7c1dcqh0n.apps.googleusercontent.com",
+              "client_id": "368421130692-s0ia0qsg5n4ohrlbvml7hpfg3f8dgq01.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

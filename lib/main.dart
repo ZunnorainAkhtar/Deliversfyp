@@ -1,17 +1,15 @@
-import 'package:Delivers/screens/HomePage.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:Delivers/screens/MainPage.dart';
-import 'package:Delivers/screens/LogIn.dart';
-import 'package:Delivers/screens/Register.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import "package:firebase_core/firebase_core.dart";
-import 'package:smooth_star_rating/smooth_star_rating.dart';
 
-Future<void> main() async {
-   WidgetsFlutterBinding.ensureInitialized();
-   await Firebase.initializeApp();
-     runApp(MyApp());
-  }
-  
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
+final databaseRef = FirebaseDatabase.instance.reference();
+
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -19,7 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Place Details',
+      title: 'Delivers',
       theme: ThemeData(
         primarySwatch: Colors.teal,
       ),
