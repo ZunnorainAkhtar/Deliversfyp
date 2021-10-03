@@ -1,5 +1,6 @@
-import 'package:firebase_database/firebase_database.dart';
+// import 'package:firebase_database/firebase_database.dart';
 import 'package:Delivers/main.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:Delivers/screens/HomePage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -28,7 +29,7 @@ class _RegisterState extends State<Register> {
   final TextEditingController phoneNumberController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final databaseRef = FirebaseDatabase.instance.reference();
+  // final databaseRef = FirebaseDatabase.instance.reference();
   User firebaseUser;
 
 
@@ -160,12 +161,19 @@ class _RegisterState extends State<Register> {
     super.dispose();
   }
   void registerNewUser()async{
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+
     String name = userNameController.text.trim();
     String email = emailController.text.trim();
     String phone = phoneNumberController.text.trim();
     String password = passwordController.text.trim();
     try{
       final User user = (await _auth.createUserWithEmailAndPassword(email: emailController.text, password: passwordController.text)).user;
+      users.doc(user.uid).set({
+        'phone': phone,
+        'username': name,
+        "email": email
+      });
 
       setState(() {
         if (user!=null){

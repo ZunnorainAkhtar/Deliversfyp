@@ -3,13 +3,12 @@ import 'package:Delivers/screens/MainPage.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
-void main() async{
+Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(MyApp());
 }
-final databaseRef = FirebaseDatabase.instance.reference();
-
+// final databaseRef = FirebaseDatabase.instance.reference();
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.

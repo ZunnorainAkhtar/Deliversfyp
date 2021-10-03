@@ -2,6 +2,8 @@
 import 'package:Delivers/screens/HomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import 'HomePage.dart';
 class LogOut extends StatefulWidget {
   @override
   _LogOutState createState() => _LogOutState();
@@ -56,7 +58,7 @@ class _LogOutState extends State<LogOut> {
                             signOut();
                             Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => HomeScreen()),
+                                MaterialPageRoute(builder: (context) => HomePage()),
                             );
                           },
                           child: Text(

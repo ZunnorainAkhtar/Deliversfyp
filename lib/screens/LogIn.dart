@@ -5,7 +5,7 @@ import 'package:Delivers/screens/ForgotPassword.dart';
 import 'package:Delivers/screens/Register.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:firebase_database/firebase_database.dart';
+// import 'package:firebase_database/firebase_database.dart';
 
 class LogIn extends StatefulWidget {
   @override
@@ -25,7 +25,7 @@ class _LogInState extends State<LogIn> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final databaseRef = FirebaseDatabase.instance.reference();
+  // final databaseRef = FirebaseDatabase.instance.reference();
   User firebaseUser;
 
   @override
@@ -141,6 +141,7 @@ class _LogInState extends State<LogIn> {
   void signInWithEmailAndPassword()async{
     try{
       final User user = (await _auth.signInWithEmailAndPassword(email: emailController.text.trim(), password: passwordController.text.trim())).user;
+      print(user);
       setState(() {
         if (user!=null){
           Fluttertoast.showToast(msg: "Signed In successfully");
@@ -152,6 +153,7 @@ class _LogInState extends State<LogIn> {
 
       });
     }catch(e){
+      print(e);
       Fluttertoast.showToast(msg: e.toString());
     }
 
