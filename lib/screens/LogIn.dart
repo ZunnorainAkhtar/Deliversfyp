@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:Delivers/screens/HomeScreen.dart';
 import 'package:Delivers/screens/ForgotPassword.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:Delivers/screens/Register.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 // import 'package:firebase_database/firebase_database.dart';
 
 class LogIn extends StatefulWidget {
@@ -140,18 +143,37 @@ class _LogInState extends State<LogIn> {
 
   void signInWithEmailAndPassword()async{
     try{
-      final User user = (await _auth.signInWithEmailAndPassword(email: emailController.text.trim(), password: passwordController.text.trim())).user;
-      print(user);
-      setState(() {
-        if (user!=null){
-          Fluttertoast.showToast(msg: "Signed In successfully");
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => HomeScreen()),
-          );
-        }
+      CollectionReference users = FirebaseFirestore.instance.collection('users');
+      SharedPreferences prefs = await SharedPreferences.getInstance();
 
-      });
+      final User user = (await _auth.signInWithEmailAndPassword(email: emailController.text.trim(), password: passwordController.text.trim())).user;
+
+      if (user!=null){
+        final DocumentSnapshot currentUser = await users.doc(user.uid).get();
+        var data = Map<String, dynamic>.from(currentUser.data());
+
+        prefs.setString('userId', user.uid);
+        prefs.setString('username', data["username"]);
+        prefs.setString('email', data["email"]);
+        prefs.setString('phone', data["phone"]);
+
+        Fluttertoast.showToast(msg: "Signed In successfully");
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+        );
+      }
+
+      // setState(() {
+      //   if (user!=null){
+      //     Fluttertoast.showToast(msg: "Signed In successfully");
+      //     Navigator.push(
+      //       context,
+      //       MaterialPageRoute(builder: (context) => HomeScreen()),
+      //     );
+      //   }
+      //
+      // });
     }catch(e){
       print(e);
       Fluttertoast.showToast(msg: e.toString());

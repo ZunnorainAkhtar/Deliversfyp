@@ -2,6 +2,7 @@
 import 'package:Delivers/screens/HomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'HomePage.dart';
 class LogOut extends StatefulWidget {
@@ -88,7 +89,9 @@ class _LogOutState extends State<LogOut> {
       
     );
   }
-  void signOut(){
+  void signOut() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     _auth.signOut();
+    prefs.clear();
   }
 }
