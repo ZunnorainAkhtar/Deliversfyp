@@ -30,7 +30,7 @@ class _RegisterState extends State<Register> {
   final TextEditingController passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   // final databaseRef = FirebaseDatabase.instance.reference();
-  User firebaseUser;
+ // User firebaseUser;
 
 
 

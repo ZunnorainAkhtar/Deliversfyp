@@ -17,10 +17,10 @@ class RequestAssistant
      }
      else
      {
-       return "failed, no response:";
+       return "failed";
      }
    }catch(exp){
-     return "failed:";
+     return "failed";
    }
 
   }

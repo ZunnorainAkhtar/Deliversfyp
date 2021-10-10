@@ -3,12 +3,31 @@ import 'package:Delivers/screens/About.dart';
 import 'package:Delivers/screens/Vehicle.dart';
 import 'package:Delivers/screens/LogOut.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'package:Delivers/Assistants/requestAssistant.dart';
+import 'package:Delivers/Models/placePredictions.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import '../configMaps.dart';
+
 class PickUp extends StatefulWidget {
   @override
   _PickUpState createState() => _PickUpState();
 }
 
 class _PickUpState extends State<PickUp> {
+  Completer<GoogleMapController> _controllerGoogleMap = Completer();
+  GoogleMapController newGoogleMapController;
+  String username= "", email="";
+  List<PlacePredictions> placePredictionList=[];
+
+
+
+  static final CameraPosition _kGooglePlex = CameraPosition(
+    target: LatLng(37.42796133580664, -122.085749655962),
+    zoom: 14.4746,
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,16 +36,20 @@ class _PickUpState extends State<PickUp> {
       ),
       body: Stack(
         children: [
-          /*  GoogleMap(
-          mapType: MapType.normal,
-          myLocationButtonEnabled: true,
-          initialCameraPosition: _kGooglePlex,
-          onMapCreated: (GoogleMapController controller)
-          {
+          GoogleMap(
+
+            mapType: MapType.normal,
+            myLocationButtonEnabled: true,
+            initialCameraPosition: _kGooglePlex,
+
+            onMapCreated: (GoogleMapController controller)
+            {
               _controllerGoogleMap.complete(controller);
               newGoogleMapController =controller;
-          },
-      ),*/
+
+
+            },
+          ),
           Positioned(
               left: 0.0,
               right: 0.0,
@@ -91,6 +114,19 @@ class _PickUpState extends State<PickUp> {
 
 
           ),
+          SizedBox(height: 100.0,),
+          (placePredictionList.length > 0)
+              ? Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            child: ListView.separated(itemBuilder: (context,index){
+              return PredictionTile(placePredictions: placePredictionList[index],);
+            },
+              separatorBuilder: (BuildContext context, int index) => DividerWidget(),
+              itemCount: placePredictionList.length,
+              shrinkWrap: true,
+              physics: ClampingScrollPhysics(),
+            ),
+          ) : Stack()
         ],
       ),
       drawer: Drawer(
@@ -142,9 +178,78 @@ class _PickUpState extends State<PickUp> {
 
     );
   }
+
+  void findPlace(String placeName) async{
+    if (placeName.length > 1)
+    {
+      String autoCompleteUrl = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&key=$mapKey&components=country:pk";
+      var res = await RequestAssistant.getRequest(autoCompleteUrl);
+      if(res == "failed")
+      {
+        return;
+      }
+      if(res["status"] == "OK")
+      {
+        var predictions = res ["predictions"];
+        var placesList = (predictions as List).map((e) =>  PlacePredictions.fromJson(e)).toList();
+        setState(() {
+          placePredictionList = placesList;
+        });
+      }
+    }
+  }
 }
 
+class PredictionTile extends StatelessWidget {
+  final PlacePredictions placePredictions;
+  PredictionTile({Key key, this.placePredictions}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return FlatButton(
+      padding: EdgeInsets.all(0.0),
+      onPressed: (){
 
+      },
+      child: Container(
+        child: Column(
+          children: [
+            SizedBox(width:10.0,),
+            Row(
+              children: [
+                Icon(Icons.add_location),
+                SizedBox(height: 14.0,),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height:8.0),
+                      Text(placePredictions.main_text, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 16.0),),
+                      SizedBox(height: 2.0,),
+                      Text(placePredictions.secondary_text, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12.0, color: Colors.grey)),
+                      SizedBox(height:8.0),
+                    ],
+                  ),
+                )
+              ],
+            ),
+            SizedBox(width:14.0),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class DividerWidget extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    return Divider(
+      height:1.0,
+      color: Colors.yellowAccent,
+      thickness: 1.0,
+    );
+  }}
 
 
 

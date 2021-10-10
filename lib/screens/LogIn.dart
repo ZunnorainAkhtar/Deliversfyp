@@ -29,7 +29,7 @@ class _LogInState extends State<LogIn> {
   final TextEditingController passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   // final databaseRef = FirebaseDatabase.instance.reference();
-  User firebaseUser;
+  //User firebaseUser;
 
   @override
   Widget build(BuildContext context) {
