@@ -286,13 +286,13 @@ class PredictionTile extends StatelessWidget {
   PredictionTile({Key key, this.placePredictions}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return /*FlatButton(
+    return FlatButton(
       padding: EdgeInsets.all(0.0),
       onPressed: (){
         getplaceAddressDetails(placePredictions.place_id, context);
 
       },
-      child:*/ Container(
+      child: Container(
       color: Colors.white,
         child: Column(
           children: [
@@ -318,9 +318,10 @@ class PredictionTile extends StatelessWidget {
             SizedBox(width:14.0),
           ],
         ),
+      ),
       );
   }
-  /*void getplaceAddressDetails(String placeId, BuildContext context) async
+  void getplaceAddressDetails(String placeId, context) async
   {
     String placeDetailsUrl = "https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$mapKey";
     var res = await RequestAssistant.getRequest(placeDetailsUrl);
@@ -337,12 +338,12 @@ class PredictionTile extends StatelessWidget {
         address.longitude = res["result"]["geometry"]["location"]["lng"];
 
         Provider.of<AppData>(context, listen: false).updateDropOffLocationAddress(address);
-        print("This is DropOff Location:");
+        print("This is DropOff Location::");
         print(address.placeName);
 
-        Navigator.pop(context, "obtainDirection");
+        //Navigator.pop(context, "obtainDirection");
       }
-  }*/
+  }
 }
 
 class DividerWidget extends StatelessWidget {
