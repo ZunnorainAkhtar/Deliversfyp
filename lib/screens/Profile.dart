@@ -32,7 +32,7 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Edit Profile"),
+        title: Text("Profile"),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white,),
           onPressed: () {
@@ -55,7 +55,7 @@ class _ProfileState extends State<Profile> {
                   child: CircleAvatar(
                     backgroundColor: Colors.teal,
                     radius: 60,
-                    child: Text(this.username.substring(0,2).toUpperCase(), style: TextStyle(color: Colors.white, fontSize: 32),),
+                    child: Text(this.username.substring(0,2).toUpperCase(), style: TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold),),
                   )
                   // Stack(
                   //   children: [

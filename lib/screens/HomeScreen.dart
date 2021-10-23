@@ -120,7 +120,7 @@ class _HomeScreenState extends State<HomeScreen>
                       SizedBox(height: 10.0),
                       Padding(
                         padding: const EdgeInsets.all(5.0,),
-                        child: RaisedButton(
+                        /*child: RaisedButton(
                           onPressed: () {
                             Navigator.push(
                               context,
@@ -139,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen>
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
                           ),
-                        ),
+                        ),*/
                       ),
                       //TextField(
                         //decoration: InputDecoration(
@@ -249,22 +249,26 @@ class _HomeScreenState extends State<HomeScreen>
 
   void findPlace(String placeName) async{
    if (placeName.length > 1)
-       {
-         String autoCompleteUrl = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&key=$mapKey&components=country:pk";
-         var res = await RequestAssistant.getRequest(autoCompleteUrl);
-         if(res == "failed")
-         {
-           return;
-         }
-         if(res["status"] == "OK")
-           {
-             var predictions = res ["predictions"];
-             var placesList = (predictions as List).map((e) =>  PlacePredictions.fromJson(e)).toList();
-             setState(() {
-               placePredictionList = placesList;
-             });
-           }
-  }
+   {
+     String autoCompleteUrl = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&key=$mapKey&components=country:pk";
+     var res = await RequestAssistant.getRequest(autoCompleteUrl);
+     if(res == "failed")
+     {
+       return;
+     }
+     if(res["status"] == "OK")
+     {
+       var predictions = res ["predictions"];
+       var placesList = (predictions as List).map((e) =>  PlacePredictions.fromJson(e)).toList();
+       setState(() {
+         placePredictionList = placesList;
+       });
+     }
+    } else{
+     setState(() {
+       placePredictionList = [];
+     });
+    }
   }
 
  /* Future<void> getPlaceDirection() async{
@@ -337,11 +341,14 @@ class PredictionTile extends StatelessWidget {
         address.latitude = res["result"]["geometry"]["location"]["lat"];
         address.longitude = res["result"]["geometry"]["location"]["lng"];
 
-        Provider.of<AppData>(context, listen: false).updateDropOffLocationAddress(address);
-        print("This is DropOff Location::");
-        print(address.placeName);
+        //Provider.of<AppData>(context, listen: false).updateDropOffLocationAddress(address);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString("endLat", '${address.latitude}');
+        prefs.setString("endLng", '${address.longitude}');
+        prefs.setString("endPlaceName", '${address.placeName}');
 
-        //Navigator.pop(context, "obtainDirection");
+        // Navigator.pop(context, "obtainDirection");
+        Navigator.push(context, MaterialPageRoute(builder: (context) => PickUp()));
       }
   }
 }

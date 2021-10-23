@@ -1,3 +1,4 @@
+import 'package:Delivers/Models/Address.dart';
 import 'package:Delivers/screens/Profile.dart';
 import 'package:Delivers/screens/About.dart';
 import 'package:Delivers/screens/Vehicle.dart';
@@ -7,6 +8,7 @@ import 'dart:async';
 import 'package:Delivers/Assistants/requestAssistant.dart';
 import 'package:Delivers/Models/placePredictions.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../configMaps.dart';
 
@@ -77,6 +79,9 @@ class _PickUpState extends State<PickUp> {
                       Text("Confirm Your PickUp Location", style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),),
                       SizedBox(height: 20.0),
                       TextField(
+                        onChanged: (val){
+                          findPlace(val);
+                        },
                         decoration: InputDecoration(
                             border: OutlineInputBorder(),
                             hintText: "Enter your PickUp Location"),
@@ -179,6 +184,7 @@ class _PickUpState extends State<PickUp> {
     );
   }
 
+
   void findPlace(String placeName) async{
     if (placeName.length > 1)
     {
@@ -190,15 +196,20 @@ class _PickUpState extends State<PickUp> {
       }
       if(res["status"] == "OK")
       {
-        var predictions = res ["predictions"];
+        var predictions = res["predictions"];
         var placesList = (predictions as List).map((e) =>  PlacePredictions.fromJson(e)).toList();
         setState(() {
           placePredictionList = placesList;
         });
       }
+    } else{
+      setState(() {
+        placePredictionList = [];
+      });
     }
   }
-}
+  }
+
 
 class PredictionTile extends StatelessWidget {
   final PlacePredictions placePredictions;
@@ -208,9 +219,11 @@ class PredictionTile extends StatelessWidget {
     return FlatButton(
       padding: EdgeInsets.all(0.0),
       onPressed: (){
+        getplaceAddressDetails(placePredictions.place_id, context);
 
       },
       child: Container(
+        color: Colors.white,
         child: Column(
           children: [
             SizedBox(width:10.0,),
@@ -239,6 +252,36 @@ class PredictionTile extends StatelessWidget {
     );
   }
 }
+
+void getplaceAddressDetails(String placeId, context) async
+{
+  String placeDetailsUrl = "https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$mapKey";
+  var res = await RequestAssistant.getRequest(placeDetailsUrl);
+  if(res == "failed")
+  {
+    return;
+  }
+  if(res["status"] == "OK")
+  {
+    Address address = Address();
+    address.placeName = res["result"]["name"];
+    address.placeId = placeId;
+    address.latitude = res["result"]["geometry"]["location"]["lat"];
+    address.longitude = res["result"]["geometry"]["location"]["lng"];
+
+    //Provider.of<AppData>(context, listen: false).updateDropOffLocationAddress(address);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("startLat", '${address.latitude}');
+    prefs.setString("startLng", '${address.longitude}');
+    prefs.setString("startPlaceName", '${address.placeName}');
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Vehicle()),
+    );
+  }
+}
+
 
 class DividerWidget extends StatelessWidget {
 
