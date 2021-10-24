@@ -1,16 +1,32 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:Delivers/screens/Profile.dart';
 import 'package:Delivers/screens/About.dart';
 import 'package:Delivers/screens/LogOut.dart';
 import 'package:Delivers/screens/Htv.dart';
 import 'package:Delivers/screens/Ltv.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Vehicle extends StatefulWidget {
   @override
   _VehicleState createState() => _VehicleState();
 }
+Map<MarkerId, Marker> markers = {};
 
-class _VehicleState extends State<Vehicle> {
+class _VehicleState extends State<Vehicle>
+{
+  Completer<GoogleMapController> _controllerGoogleMap = Completer();
+  GoogleMapController newGoogleMapController;
+//String username= "", email="";
+ // List<PlacePredictions> placePredictionList=[];
+
+  static final CameraPosition _kGooglePlex = CameraPosition(
+    target: LatLng(37.42796133580664, -122.085749655962),
+    zoom: 14.4746,
+  );
+
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
@@ -19,16 +35,20 @@ class _VehicleState extends State<Vehicle> {
       ),
       body: Stack(
         children: [
-          /*  GoogleMap(
-          mapType: MapType.normal,
-          myLocationButtonEnabled: true,
-          initialCameraPosition: _kGooglePlex,
-          onMapCreated: (GoogleMapController controller)
-          {
+          GoogleMap(
+
+            mapType: MapType.normal,
+            myLocationButtonEnabled: false,
+            zoomControlsEnabled: false,
+            initialCameraPosition: _kGooglePlex,
+
+            onMapCreated: (GoogleMapController controller)
+            {
               _controllerGoogleMap.complete(controller);
               newGoogleMapController =controller;
-          },
-      ),*/
+              },
+          ),
+
           Positioned(
               left: 0.0,
               right: 0.0,
@@ -60,12 +80,7 @@ class _VehicleState extends State<Vehicle> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           ElevatedButton(
-                            onPressed: (){
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => Ltv()),
-                              );
-                            },
+                            onPressed: () => selectVehicle("LTV"),
                             child: Text("   LTV   ", style: TextStyle(fontSize: 25, letterSpacing: 2, color: Colors.white)),
                             style: ElevatedButton.styleFrom(
                               primary: Colors.teal,
@@ -74,12 +89,7 @@ class _VehicleState extends State<Vehicle> {
                             ),
                           ),
                           ElevatedButton(
-                            onPressed: (){
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => Htv()),
-                              );
-                            },
+                            onPressed: () => selectVehicle("HTV"),
                             child: Text("   HTV   ", style: TextStyle(fontSize: 25, letterSpacing: 2, color: Colors.white)),
                             style: ElevatedButton.styleFrom(
                                 primary: Colors.teal,
@@ -148,6 +158,23 @@ class _VehicleState extends State<Vehicle> {
       ),
 
     );
+  }
+  void selectVehicle(String type) async{
+    print(type);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("vehicleType", type);
+
+    if(type == "LTV"){
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Ltv()),
+      );
+    }else if(type == "HTV"){
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Htv()),
+      );
+    }
   }
 }
 

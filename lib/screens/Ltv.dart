@@ -1,11 +1,32 @@
 import 'package:Delivers/screens/ProgressScreen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 class Ltv extends StatefulWidget {
   @override
   _LtvState createState() => _LtvState();
 }
 
 class _LtvState extends State<Ltv> {
+  var vehicles;
+
+  @override
+  void initState() {
+    super.initState();
+    getDataFromFb();
+  }
+
+  void getDataFromFb() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    CollectionReference vehiclesInDB = FirebaseFirestore.instance.collection('vehicles');
+
+    var vehicleType = prefs.getString("vehicleType");
+    var vehicles = await vehiclesInDB.where("type", isEqualTo: "LTV").get();
+    setState((){
+      this.vehicles = vehicles.docs;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
