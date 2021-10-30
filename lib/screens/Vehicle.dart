@@ -160,7 +160,6 @@ class _VehicleState extends State<Vehicle>
     );
   }
   void selectVehicle(String type) async{
-    print(type);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("vehicleType", type);
 
