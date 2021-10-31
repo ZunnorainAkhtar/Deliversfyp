@@ -9,6 +9,8 @@ import 'package:Delivers/screens/Ltv.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../preferencesMethods.dart';
+
 class Vehicle extends StatefulWidget {
   @override
   _VehicleState createState() => _VehicleState();
@@ -19,13 +21,28 @@ class _VehicleState extends State<Vehicle>
 {
   Completer<GoogleMapController> _controllerGoogleMap = Completer();
   GoogleMapController newGoogleMapController;
-//String username= "", email="";
+  String username= "", email="";
  // List<PlacePredictions> placePredictionList=[];
 
   static final CameraPosition _kGooglePlex = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
     zoom: 14.4746,
   );
+
+  @override
+  void initState() {
+    super.initState();
+    final prefs = PreferencesMethods();
+    prefs.getUserDetails('email').then((String email) {
+      prefs.getUserDetails('username').then((String username) {
+        this.setState(() {
+          this.username= username;
+          this.email= email;
+        });
+      });
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -114,10 +131,10 @@ class _VehicleState extends State<Vehicle>
         child: ListView(
           children: <Widget>[
             UserAccountsDrawerHeader(
-                accountName: Text("Zunnorain Akhtar"),
-                accountEmail: Text("zunnorainakhtar123@gmail.com"),
+                accountName: Text(username),
+                accountEmail: Text(email),
                 currentAccountPicture: CircleAvatar(
-                  child: Text("Z", style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.bold, color: Colors.white)),
+                  child: Text(username.substring(0,1).toUpperCase(), style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.bold, color: Colors.white)),
                 )),
             ListTile(
                 leading: Icon(Icons.person),
@@ -149,7 +166,7 @@ class _VehicleState extends State<Vehicle>
                   context,
                   MaterialPageRoute(builder: (context) => LogOut()),
                 );
-              }
+              },
             )
 
           ],
