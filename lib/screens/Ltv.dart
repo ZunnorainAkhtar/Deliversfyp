@@ -12,6 +12,7 @@ class Ltv extends StatefulWidget {
 class _LtvState extends State<Ltv> {
   var car, moto, auto;
   var distance;
+  var selectedVehicle;
 
   @override
   void initState() {
@@ -51,6 +52,33 @@ class _LtvState extends State<Ltv> {
     });
   }
 
+  void requestRide() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    CollectionReference rides = FirebaseFirestore.instance.collection('rides');
+    prefs.getString('userId');
+    var driver = this.selectedVehicle["driver"];
+
+    var rideDetails = await rides.add({
+      "driver": this.selectedVehicle["driver"],
+      "userId": prefs.getString('userId'),
+      "userName": prefs.getString('username'),
+      "userPhone": prefs.getString('phone'),
+      "pickupLocation": new GeoPoint(double.parse(prefs.getString("startLat")),double.parse(prefs.getString("startLng"))),
+      "dropoffLocation": new GeoPoint(double.parse(prefs.getString("endLat")),double.parse(prefs.getString("endLng"))),
+      "status": "pending",
+      "fare": (this.selectedVehicle["ratePerKm"] * this.distance).round(),
+      "startPlaceName": prefs.getString('startPlaceName'),
+      "endPlaceName": prefs.getString('endPlaceName'),
+    });
+
+    prefs.setString('rideId', rideDetails.id);
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ProgressScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,35 +95,39 @@ class _LtvState extends State<Ltv> {
                     Text("Light Transport Vehicles",style: TextStyle(fontSize: 25, fontWeight: FontWeight.w900)),
                     SizedBox(height: 30),
                     ListTile(
-                         leading: Image.asset('assets/pic2.jpg', width: 100, height: 100),
+                      leading: Image.asset('assets/pic2.jpg', width: 100, height: 100),
                       title: Text(moto != null ? moto["name"]: "MOTO", style : TextStyle(fontSize: 23, fontWeight: FontWeight.bold)),
                       trailing: Text('PKR ${moto != null ? (moto["ratePerKm"] * this.distance).round(): "0.00"}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
-                      onTap: () => print("Listtile Tapped"),
+                      onTap: (){
+                           setState(() => selectedVehicle = moto);
+                      },
+                      selected: selectedVehicle != null && selectedVehicle.id ==  moto.id ? true: false,
                   ),
                     SizedBox(height: 30),
                     ListTile(
                         leading: Image.asset('assets/pic3.jpg', width: 100, height: 100),
                         title: Text(auto != null ? auto["name"]: "AUTO", style : TextStyle(fontSize: 23, fontWeight: FontWeight.bold)),
                         trailing: Text('PKR ${auto != null ? (auto["ratePerKm"] * this.distance).round(): "0.00"}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
-                                onTap: () => print("Listtile Tapped"),
+                        onTap: (){
+                          setState(() => selectedVehicle = auto);
+                        },
+                      selected: selectedVehicle != null && selectedVehicle.id ==  auto.id ? true: false,
                     ),
                     SizedBox(height: 30.0),
                      ListTile(
                        leading: Image.asset('assets/pic4.jpg', width: 100, height: 100),
                        title: Text(car != null ? car["name"]: "CAR", style : TextStyle(fontSize: 23, fontWeight: FontWeight.bold)),
                        trailing: Text('PKR ${car != null ? (car["ratePerKm"] * this.distance).round(): "0.00"}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
-                       onTap: () => print("Listtile Tapped"),
+                       onTap: (){
+                         setState(() => selectedVehicle = car);
+                       },
+                       selected: selectedVehicle != null && selectedVehicle.id ==  car.id ? true: false,
                      ),
                      SizedBox(height: 30.0),
                      Padding(
                        padding: const EdgeInsets.all(9.0,),
                        child: RaisedButton(
-                         onPressed: () {
-                           Navigator.push(
-                             context,
-                             MaterialPageRoute(builder: (context) => ProgressScreen()),
-                           );
-                         },
+                         onPressed: selectedVehicle == null? null: requestRide,
                          child: Text(
                            '                     Request Ride                    ',
                            style: TextStyle(

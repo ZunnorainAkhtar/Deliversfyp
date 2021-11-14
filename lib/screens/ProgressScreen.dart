@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:Delivers/screens/Driver.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProgressScreen extends StatefulWidget {
   @override
@@ -12,11 +14,22 @@ class _ProgressScreenState extends State<ProgressScreen> {
   void initState(){
     // TODO:implement initState
     super.initState();
-    Timer(Duration(seconds: 4), (){
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (_) => Driver()));
-    });
+    // Timer(Duration(seconds: 4), (){
+    //   Navigator.of(context)
+    //       .pushReplacement(MaterialPageRoute(builder: (_) => Driver()));
+    // });
+    checkRideStatus();
+  }
 
+  void checkRideStatus() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    CollectionReference rides = FirebaseFirestore.instance.collection('rides');
+
+    var rideId = prefs.getString("rideId");
+    var rideDetails = await rides.doc(rideId).get();
+
+    var rideStatus = rideDetails.get("status");
+    print(rideStatus);
   }
 
   Widget build(BuildContext context) {
