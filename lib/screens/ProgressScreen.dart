@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:Delivers/screens/Driver.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:Delivers/screens/Ltv.dart';
 
 class ProgressScreen extends StatefulWidget {
   @override
@@ -10,18 +11,25 @@ class ProgressScreen extends StatefulWidget {
 }
 
 class _ProgressScreenState extends State<ProgressScreen> {
+  Timer _clockTimer;
+
   @override
-  void initState(){
+  void initState() {
     // TODO:implement initState
     super.initState();
-    // Timer(Duration(seconds: 4), (){
-    //   Navigator.of(context)
-    //       .pushReplacement(MaterialPageRoute(builder: (_) => Driver()));
-    // });
-    checkRideStatus();
+    time();
   }
 
-  void checkRideStatus() async{
+  void time() {
+    Timer.periodic(Duration(seconds: 5), (timer) {
+      // checkRideStatus();
+      // print("Ride Completed");
+      // print("Ride Checking");
+      checkRideStatus(timer);
+    });
+  }
+
+  void checkRideStatus(timer) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     CollectionReference rides = FirebaseFirestore.instance.collection('rides');
 
@@ -29,16 +37,27 @@ class _ProgressScreenState extends State<ProgressScreen> {
     var rideDetails = await rides.doc(rideId).get();
 
     var rideStatus = rideDetails.get("status");
-    print(rideStatus);
+
+    if (rideStatus == "pending") {
+      print("Ride Pending");
+    } else if (rideStatus == "accepted") {
+      print("Ride Accepted");
+      timer.cancel();
+    } else if (rideStatus == "cancelled") {
+      print("Ride Cancelled");
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Ltv()),
+      );
+    }
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-       title: Text("Delivers"),
+        title: Text("Delivers"),
       ),
-      body:Stack(
-        children: [
+      body: Stack(children: [
         /*  GoogleMap(
           mapType: MapType.normal,
           myLocationButtonEnabled: true,
@@ -49,46 +68,52 @@ class _ProgressScreenState extends State<ProgressScreen> {
               newGoogleMapController =controller;
           },
         ),*/
-         Positioned(
-           left: 0.0,
-           right: 0.0,
-           bottom: 0.0,
-           child: Container(
-             height: 240.0,
-             decoration: BoxDecoration(
-               color: Colors.white,
-               borderRadius: BorderRadius.only(
-                   topLeft: Radius.circular(20.0),
-                   topRight: Radius.circular(20.0)),
-               boxShadow: [
-               BoxShadow(
-                 color: Colors.black,
-                 blurRadius: 16.0,
-                 spreadRadius: 0.5,
-                 offset: Offset(0.7, 0.7),)
-             ]),
-              child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal:24.0, vertical: 18.0),
-                 child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                   SizedBox(height: 6.0),
-                   Text("Finding a Driver...", style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold),),
-                   SizedBox(height: 20.0),
-                   Text("Please wait...", style: TextStyle(fontSize: 23.0, fontWeight: FontWeight.bold),),
-                   SizedBox(height: 10.0),
-                   LinearProgressIndicator(
-                       //backgroundColor: Colors.grey,
-                 ),
-                    ]
-                 ),
-              ),
-           ),
-         ),
-             ]
-      ),
-
-
+        Positioned(
+          left: 0.0,
+          right: 0.0,
+          bottom: 0.0,
+          child: Container(
+            height: 240.0,
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20.0),
+                    topRight: Radius.circular(20.0)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black,
+                    blurRadius: 16.0,
+                    spreadRadius: 0.5,
+                    offset: Offset(0.7, 0.7),
+                  )
+                ]),
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 24.0, vertical: 18.0),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(height: 6.0),
+                    Text(
+                      "Finding a Driver...",
+                      style: TextStyle(
+                          fontSize: 28.0, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 20.0),
+                    Text(
+                      "Please wait...",
+                      style: TextStyle(
+                          fontSize: 23.0, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 10.0),
+                    LinearProgressIndicator(
+                        //backgroundColor: Colors.grey,
+                        ),
+                  ]),
+            ),
+          ),
+        ),
+      ]),
     );
-}
+  }
 }

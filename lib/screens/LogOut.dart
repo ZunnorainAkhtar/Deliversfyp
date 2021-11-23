@@ -1,18 +1,16 @@
-
 import 'package:Delivers/screens/HomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'HomePage.dart';
+
 class LogOut extends StatefulWidget {
   @override
   _LogOutState createState() => _LogOutState();
 }
 
 class _LogOutState extends State<LogOut> {
-
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
   User firebaseUser;
 
@@ -24,7 +22,6 @@ class _LogOutState extends State<LogOut> {
       ),
       body: Stack(
         children: [
-
           Positioned(
               left: 0.0,
               right: 0.0,
@@ -40,7 +37,8 @@ class _LogOutState extends State<LogOut> {
                         color: Colors.black,
                         blurRadius: 16.0,
                         spreadRadius: 0.5,
-                        offset: Offset(0.7, 0.7),)
+                        offset: Offset(0.7, 0.7),
+                      )
                     ]),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -49,17 +47,23 @@ class _LogOutState extends State<LogOut> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       SizedBox(height: 6.0),
-                      Text("Are you sure you want to logout", style: TextStyle(
-                          fontSize: 24.0, fontWeight: FontWeight.bold),),
+                      Text(
+                        "Are you sure you want to logout",
+                        style: TextStyle(
+                            fontSize: 24.0, fontWeight: FontWeight.bold),
+                      ),
                       SizedBox(height: 20.0),
                       Padding(
-                        padding: const EdgeInsets.all(5.0,),
+                        padding: const EdgeInsets.all(
+                          5.0,
+                        ),
                         child: RaisedButton(
                           onPressed: () {
                             signOut();
                             Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => HomePage()),
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomePage()),
                             );
                           },
                           child: Text(
@@ -76,20 +80,16 @@ class _LogOutState extends State<LogOut> {
                           ),
                         ),
                       ),
-
                     ],
                   ),
                 ),
-              )
-
-
-          ),
+              )),
         ],
       ),
-      
     );
   }
-  void signOut() async{
+
+  void signOut() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _auth.signOut();
     prefs.clear();
